@@ -11,7 +11,9 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text BestScoreText;
     public GameObject GameOverText;
+    public Button BackToMenuButton;
     
     private bool m_Started = false;
     private int m_Points;
@@ -40,6 +42,8 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        UpdateBestScoreText();
+
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -55,6 +59,8 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            DataManager.Instance.CheckBestScore(m_Points);
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -72,5 +78,18 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        BackToMenuButton.gameObject.SetActive(true);
+    }
+
+    void UpdateBestScoreText()
+    {
+        string playerName = DataManager.Instance.BestPlayerName;
+        int bestScore = DataManager.Instance.BestScore;
+        BestScoreText.text = $"Best Score: {playerName} : {bestScore}";
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Start Menu");
     }
 }
